@@ -50,6 +50,7 @@ jobs:
       - name: Deploy to Kubernetes
         working-directory: .
         run: |
-          export KUBECONFIG=$"KUBE_CONFIG"
+          echo "$KUBE_CONFIG" > /tmp/kubeconfig
+          export KUBECONFIG=/tmp/kubeconfig
           kubectl apply -f deployment.yml
           kubectl rollout status deployment/node-app
