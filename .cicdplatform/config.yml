@@ -1,0 +1,34 @@
+version: '1.0'
+
+jobs:
+
+  runs-on: node-ci-base:latest
+
+  setup:
+    steps:
+      - name: Clean Workspace
+        run: rm -rf /workspace/app
+
+      - name: Clone repo
+        run: git clone https://github.com/Sectani/Node-App /workspace/app
+
+      - name: Install dependencies
+        working-directory: /workspace/app/
+        run: npm ci
+
+  test:
+    depends-on: setup
+    steps:
+      - name: Run tests
+        working-directory: /workspace/app/
+        run: npm test
+
+  build:
+    depends-on: test
+    steps:
+      - name: Build
+        working-directory: /workspace/app/
+        run: npm run build || echo "No build script defined"
+
+      - name: Copy artifacts
+        run: cp -r build /artifacts/ || echo "No build found"
