@@ -32,3 +32,17 @@ jobs:
 
       - name: Copy artifacts
         run: cp -r build /artifacts/ || echo "No build found"
+
+  docker_push:
+    depends-on: build
+    steps:
+      - name: Build Docker Image
+        working-directory: /workspace/app/
+        run: docker build -t sectani/node-app:latest .
+  
+      - name: Login to Docker Hub
+        run: |
+          echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_EAMIL" --password-stdin
+  
+      - name: Push Docker Image
+        run: docker push sectani/node-app:latest
